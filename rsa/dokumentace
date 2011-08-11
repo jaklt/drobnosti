@@ -1,0 +1,71 @@
+Nejdříve něco o Go
+==================
+Jedná se víceméně o C-čkový jazyk s prvky z Pythonu, akorát téměř vše se píše
+přesne naopak. Například deklarace proměnné a typu int vypadá takto: "a int".
+Neboli vždy je typ uveden až na konci.
+
+Hlavičky funkcí - například: "func min(a,b int) int" značí funkci min, která má
+jako parametry dva integery a vrací integer.
+
+Funkce může vracet více hodnot, následující hlavičky funkcí jsou ekvivalentní:
+	func f(a,b T) (T,T)
+	func f(a,b T) (c,d T)
+	func f(a,b T) (_,_ T)
+
+Kde podtržítko je proměnná, která je vždy po ruce, jde do ní cokoliv zapisovat,
+ale nejde z ní nic číst.
+
+Dalším důležitým rozdílem je deklarace proměnných v těle funkcí, následující
+tři způsoby deklarace jsou ekvivalentní:
+	var i int; i = 3
+	var i int = 3
+	i := 3
+
+Při použití := se deklaruje nová proměnná a její typ se uhádne z výrazu napravo.
+
+Oproti C-čku je jinak i přetypování, takto přetypuji proměnnou x na typ T: T(x).
+Další odlišnost - "array := make([]T, l)" je alokace nového pole velikosti
+l prvků typu T, len(array) pak vrací délku pole (v tomto případě l), array[a:b]
+vrací pole ukazující na prvky a až b-1 prvky pole array (v konstatním čase).
+
+Cykly a podmínky - Go zastává filosofii, že blokové závorky jsou témeř vždy
+potřeba, a proto závorky kolem podmínky/hlavičky cyklu jsou zbytecné. Na druhou
+stranu proto jsou blokové závorky v Go povinné. Uvedu porovnání zápisu
+cyklů/podmínek v Go proti C-čkové syntaxy:
+
+	            C99              |     Go
+	-----------------------------+------------------------
+	while (cond) { }             | for cond { }
+	while (1)    { }             | for { }
+	for (int i=0; i<10; i++) { } | for i:=0; i<10; i++ { }
+	if (cond) { } else { }       | if cond { } else { }
+
+Reference a derefence jsou stejné jako v C-čku, akorát není pointerová
+aritmetika. Zbylé rysy syntaxe by měli být jasné už z kódu. Go toho umí ještě
+víc než jsem zde popsal, ale uvedl jsem jen co je nezbytné ke čtení zápočťáku.
+
+Popis jazyka je k nalezení na http://golang.org. Návod k instalaci pak na
+http://golang.org/doc/install.html a dokumentace ke knihovně velkých čísel na
+http://golang.org/pkg/big.
+
+Algoritmy
+=========
+Použité algoritmy i jejich značení odpovídá tomu jak je běžně známe. Čerpal
+jsem hlavně ze skriptíček Martina Mareše http://mj.ucw.cz/papers/numth.pdf
+
+Ovládání programu
+=================
+Kompilace pro architkturu amd64: 6g rsa.go && 6l -o rsa rsa.6
+Kompilace pro architkturu 386:   8g rsa.go && 8l -o rsa rsa.6
+
+Vznikne spustitelný soubor rsa.
+
+Ovládání programu:
+./rsa -g -b 500 # vygeneruje klíče velikosti 500b
+./rsa -s soubor # rozdělí soubor na menší soubory vzhledem k velikosti klíče
+./rsa -e        # zašifruje tyto soubory veřejným klíčem
+./rsa -d        # rozšifruje tyto soubory soukormým klíčem
+./rsa -j soubor # spojí menší soubory zpět do souboru soubor
+./rsa -h        # zobrazí anglickou nápovědu
+
+Jako testovací soubor můžete použít tuto dokumentaci.

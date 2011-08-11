@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="yadb" default="all" basedir=".">
+	<description>Yet Another DataBase server</description>
+
+	<property name="src" location="./src" />
+	<property name="classes" location="./build" />
+	<property name="doc" location="./doc" />
+
+	<target name="all" depends="init,compile,javadoc" />
+
+	<target name="init">
+		<mkdir dir="${classes}" />
+		<mkdir dir="${doc}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<javac debug="true" destdir="${classes}" srcdir="${src}" includes="**/*.java" />
+	</target>
+
+	<target name="runassert" depends="init" >
+		<java fork="true" classname="YADB" classpath="${classes}">
+			<assertions><enable/></assertions>
+		</java>
+	</target>
+
+	<target name="run" depends="init" >
+		<java fork="true" classname="YADB" classpath="${classes}" />
+	</target>
+
+	<target name="javadoc">
+		<javadoc
+			sourcepath="${src}"
+			destdir="${doc}"
+			package="true"
+		>
+			<classpath>
+				<path path="${classes}:${javac.classpath}" />
+			</classpath>
+
+			<sourcepath>
+				<pathelement location="${src}" />
+			</sourcepath>
+		
+			<packageset dir="${src}" includes="*/**" />
+			<fileset dir="${src}" includes="*.java" />
+		</javadoc>
+	</target>
+</project>

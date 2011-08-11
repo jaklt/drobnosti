@@ -1,0 +1,136 @@
+                     Hranová souvislost - Tomáš Jakl, 2009
+                     #####################################
+
+Definice
+========
+
+tok (f), řez - viz [1]
+s - zdroj, t - stok
+n - počet vrcholů, m - počet hran
+
+
+Uvedení do problému
+===================
+
+Problém hranové souvislosti grafu je izomorfní hledání minimálního řezu mezi
+všemy vrcholy neohodnoceného grafu navzájem. Nemusíme volit jako zdroj a stok
+všechny dvojce vrcholů, stačí si vybrat jeden jako zdroj a vyzkoušet ho s
+ostatními jako stoky. Toto si můžeme dovolit, protože jestliže existuje nějaký
+globálně minimální řez, určitě k libovolně zvolenému zdroji existuje vrchol
+oddělený od něj tímto řezem. V orientovaném grafu je potřeba vyzkoušet oba
+směry s->t i t->s.
+
+K nalezení minimálního řezu/maximálního toku jsem si vybral Dinicův algoritmus.
+
+
+Dinicův algoritmus
+==================
+
+Definice - Síť rezerv
+---------------------
+Z původního grafu G=(V,E) sestrojíme graf G*=(V,E*), kde do E* patří hrany e z E:
+- pokud f(e)<c(e), hrana v E* bude mít kapacitu c(e)-f(e)
+- pokud f(e)>0, opačně orientované k e, s kapacitou f(e)
+
+Tímto způsobem mohou vzniknout i vícenásobné hrany, ale to algoritmus nenaruší.
+
+
+Základní idea algoritmu je iterativně vylepšovat tok až se z něj stane maximální.
+
+Samotný algoritmus:
+1.  začneme s prázným tokem
+2.  opakujeme (vylepšujeme tok)
+3.    sestrojíme síť rezerv
+4.    najdeme nejkratší st-cestu
+5.    pokud neexistuje -> konec
+6.    pročistíme síť od zbytečných hran
+      = necháme pouze hrany nacházející se na nejkratších st-cestách
+
+7.    opakujeme (najdeme blokující tok)
+8.      hladově v síti rezerv najdeme st-cestu
+9.      naplníme cestu jak nejvíc to jde
+10.     průběžně mažeme nasycené a zbytečné hrany
+
+
+Správnost
+---------
+
+Pokud se algoritmus zastaví neexistuje žádná st-cesta s nenasycenou hranou a
+tudíž díky znalosti Ford-Fulkersonova algoritmu víme, že jde o maximální tok.
+viz [1].
+
+
+Konečnost
+---------
+
+Tvrzení: V každé iteraci (2.) se zvětší délka nejkratší st-cesty v síti rezerv
+         alespoň o 1.
+Důkaz: Označíme nejkratší st-vzdálenost jako l a vrcholy rozvrstvíme podle
+	   jejich vzdálenosti od zdroje. Při čištění (krok 6.) mažeme hrany zpětné,
+	   v rámci jedné vrstvy a hrany vedoucí do vrcholů ve vrstvách dál než l.
+	   Všechny tyto hrany určitě cestu prodlužují. Po skončení vnitřního cyklu
+	   (krok 7.) víme, že neexistuje nenasycená cesta délky l. Mohou vzniknout
+	   pouze nové protisměrné hrany. Pokud vedla hrana z vrstvy A do B po
+	   zvýšení toku v ní bude v další iteraci existovat i hrana z B do A, ale
+	   aby jsme ji využili, tak musíme nejdříve navštívit vrstvu B, jít po této
+	   hraně, která nás zavede do vrstvy A, ale z minulého kroku víme, že A
+	   bylo před B, tudíž následující hrana povede opět do B. Tím se původní
+	   nejkratší cesta proloužila o 2.
+
+	   Q.E.D.
+
+
+Časová a paměťová složitost
+---------------------------
+
+3. a 4. krok běží v O(m). Prohledávání budeme dělat tak, že si u každého
+vrcholu budeme pamatovat číslo značící vzdálenost od zdroje, -1 značí, že ještě
+nebyl nalezen. Pustíme prohledávání do šířky, které nám tyto vzdálenosti zjistí
+zadarmo. Už při prohledávání mažeme hrany nesměřující do vyšších hladin.
+Končíme s hladinou, na které jsme poprvé našli hranu vedoucí do stoku. Pro
+další kroky si také u každého z nich budeme pamatovat jeho výstupní stupeň.
+
+Pročišťování provádíme takto: Po nalezení nejkratší cesty máme rozvrstvení
+vrcholů po hladinách reprezentující hranovou vzdálenost vrcholů od zdroje.
+Smažeme všechny hrany vedoucí z vrcholů na poslední hladině jinam než do stoku.
+(Průběžně aktualizujeme výstupní stupeň). Poté do fronty přidáme vrcholy s
+nulovým výstupním stupněm. Postupně vybíráme vrcholy z fronty, za každý snížíme
+výstupní stupeň vrcholům, ze kterých do aktuálního vede hrana. Pokud se
+některému vrcholu sníží výstupní stupeň na 0, přidáme jej taky do fronty.
+Časová složitost pročišťování je při reprezentaci grafu půlhranami O(m).
+
+Cyklus začínající 7. krokem můžeme provádět prohledáváním do hloubky tak, že si
+budeme ukládat u každého právě prohledávaného vrcholu kolik jím právě teče a
+kolik jím může maximálně téct (pravda u sítí s jednotkovými kapacitami hran to
+bude vždy 1 a 0). Dokud není vrchol naplněn a dokud má nenulový výstupní
+stupeň, vezmeme první hranu z něj vedoucí a pošleme po ní kolik můžeme. Pokud
+ji tímto způsobem nasytíme, nebo vrchol, do kterého vede má nulový výstupní
+stupeň, tak tuto hranu smažeme a aktualizujeme kolik vrcholem odtéká.
+
+Tímto způsobem pro obecné kapacity je složitost cyklu v 7. kroku O(m*n),
+protože každé prohledávání do hloubky má délku maximálně n a nasytíme tím vždy
+alespoň jednu hranu. U jednotkových kapacit odstraňujeme vždy celou cestu takže
+iterací bude maximálně O(m/l) a každá iterace trvá maximálně O(l) -> celková
+složitost O(m). (l značí aktuální délku nejkratší st-cesty)
+
+Dohromady tedy jedna iterace vnějšího cyklu má O(m), ale jak už jsme dokázali,
+pokaždé délka nejkratší st-cesty vzroste vždy alespoň o jedna a zároveň tato
+délka může být maximálně n tak celková složitost algoritmu vyjde O(m*n).
+
+Podle [1] pro jednotkové kapacity vychází, že iterací vnějšího cyklu bude
+O(n^2/3) a složitost celého algoritmu pak bude O(n^2/3*m).
+
+
+Přílohy
+=======
+
+V přiloženém souboru dinic.c je uvedena ukázka dinicova algoritmu v C99
+k zjištění hranové souvislosti. Další soubory vyhovující masce "input*"
+představují vzorová vstupní data.
+
+
+Použitá literatura
+==================
+
+    [1] Martin Mareš. Krajinou grafových algoritmů. ITI Series 2007, Praha.
+

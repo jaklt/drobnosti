@@ -1,0 +1,33 @@
+Uzivatelska dokumentace Yet Another DataBase (zkracene YADB)
+--------------------------------------------
+
+YADB je jednoduchy databazovy server. Umi jen 5 zakladnich operaci: SELECT,
+INSERT, DELETE, UPDATE a CREATE. Odpovidaji ekvivalentum znamych z SQL. Jejich
+syntaxe je nasledujici:
+
+	INSERT INTO table_name VALUES (value1, value2, ...)
+	SELECT FROM table_name WHERE ...
+	DELETE FROM table_name WHERE ...
+	UPDATE table_name SET column1=value1, column2=value2, ... WHERE ...
+	CREATE TABLE table_name (column1 typ1, column2 typ2, ...)
+
+Kde nazev tabulky table_name musi byt bez mezer, nazvy sloupcu nesmi zacinat
+cislem, pomlckou a apostrofem. Podporovane typy jsou INTEGER, REAL a STRING se
+stejnymy vlastnostmi jako odpovidajici type Integer, Double a String v Jave.
+
+WHERE cast neni povinna, pokud je uvedena je povolena tato syntaxe:
+	WHERE podminka1 AND podminka2 AND ...;
+Podminky jsou tvaru:
+	cislo/jmenosloupce/'retezec znaku' RELACE cislo/jmenosloupce/'retezec znaku'
+a konecne RELACE jsou <,<=,!=,=,>=,>
+
+Program se spousti ze slozky build prikazem: java YADB PORT, kde PORT je cislo
+portu, na kterem ma naslouchat. Po bezproblemovem splenni prikazu vrati program
+'DONE', pokud se objevi chyba vypise pri chybe ve vyrazu 'Syntax error', pokud
+se nepovede spravne otypovat vkladany prvek proti typum tabulky 'Invalid type',
+jinak 'Error occured'.
+
+Prikazem z korenoveho adresare projektu ant compile se zkompiluje a prikazem
+ant javadoc vygeneruje dokumentaci do slozky doc.
+
+Pozadovanou verzi Javy je alespon 5.
