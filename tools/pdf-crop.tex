@@ -1,0 +1,52 @@
+\documentclass[12pt,a4paper]{book}
+\usepackage[czech]{babel}
+\usepackage{fontspec}
+\usepackage{xunicode}
+\defaultfontfeatures{Ligatures=TeX}
+\usepackage{luacode}
+\usepackage{pdfpages}
+
+% spousti se pomoci lualatex --shel-escape <soubor>
+% pro format do Kindlu: pdfnup --nup 1x2 --no-landscape <soubor>
+
+\begin{document}
+\begin{luacode}
+	function oneFile(filename, grid)
+		f = io.popen("pdfinfo " .. filename .. " | grep Pages | cut -c 7-", "r")
+		pages = tonumber(f:read())
+
+		incl1 = "\\includepdf[trim="
+		incl2 = ", clip=true, fitpaper]{" .. filename .. "}"
+
+		for i = 1, pages do
+			for _,g in pairs(grid) do
+				tex.sprint(incl1 .. g ..", pages=" .. i .. incl2)
+			end
+		end
+	end
+
+	grid4 = {
+		"1.3cm 11.1cm 16cm 0.6cm",
+		"16cm 11.1cm 1.3cm 0.6cm",
+		"1.3cm 0.6cm 16cm 11.1cm",
+		"16cm 0.6cm 1.3cm 11.1cm"
+	}
+
+	grid2 = {
+		"1.6cm 15.5cm 1.7cm 0.7cm",
+		"1.6cm 0.7cm 1.7cm 15.5cm",
+	}
+
+	oneFile("../lecture01.pdf", grid4)
+	oneFile("../lecture02.pdf", grid4)
+	oneFile("../lecture03.pdf", grid4)
+	oneFile("../lecture04.pdf", grid4)
+	oneFile("../lecture05.pdf", grid2) -- grid2
+	oneFile("../lecture06.pdf", grid2) -- grid2
+	oneFile("../lecture07.pdf", grid4)
+	oneFile("../lecture08.pdf", grid4)
+	oneFile("../lecture09.pdf", grid4)
+	oneFile("../lecture10.pdf", grid4)
+	oneFile("../lecture11.pdf", grid4)
+\end{luacode}
+\end{document}
