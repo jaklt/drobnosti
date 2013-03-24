@@ -51,3 +51,5 @@ main = do
     case parse mainParser "" s of
         Left  r -> putStrLn $ show r
         Right r -> writeFile (file ++ ".tex") $ trim  r
+
+-- for more see http://www.cs.uu.nl/wiki/TC/CourseMaterials
