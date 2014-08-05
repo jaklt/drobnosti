@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="Calculator" default="all" basedir=".">
+	<property name="src" location="." />
+	<property name="classes" location="." />
+
+	<target name="all" depends="compile,run" />
+
+	<target name="compile">
+		<javac destdir="${classes}" srcdir="${src}" />
+	</target>
+
+	<target name="run">
+		<java fork="true" classname="Calculator" classpath="${classes}" />
+	</target>
+</project>
