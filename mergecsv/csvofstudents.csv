@@ -1,0 +1,9 @@
+Student,ID,SIS User ID,SIS Login ID,Section,?Name? (?Int?)
+,,,,,
+    Points Possible,,,,,?Max mark?
+"Cerny, Martin",11111x,11111,mxa000,Models of Computation,
+"Hromadka-Modry, Dan",22222x,22222,dxb000,Models of Computation,
+"Piaoliao, Hen",33333x,33333,lxc000,Models of Computation,
+"Ren Hao, Lukas",44444x,44444,axc000,Models of Computation,
+"Svazak, Michal",55555x,55555,mcs000,Models of Computation,
+"student, Test",100000,,3333333333333333fffffffff000000000aaaaaa,Models of Computation,

@@ -1,0 +1,10 @@
+Requires cabal package called "csv".
+
+If you put all the other attached files in one directory, you can simply run:
+   runhaskell mergecsv.hs classwork10.csv
+This will produce a file called new-csvofstudents.csv. You can compare
+it with the original file csvofstudents.csv to see changes made by the
+script.
+
+Tuning how the script merges the files is done by modifying the
+constants at the beginning of the Haskell file.
